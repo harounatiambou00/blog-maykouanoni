@@ -60,7 +60,7 @@ const News = () => {
                 setSortBy(event.target.value as string);
               }}
               MenuProps={{}}
-              className="font-rubik sm:text-3xl lg:text-sm"
+              className="font-rubik sm:text-4xl lg:text-sm"
               inputProps={{
                 sx: {
                   height: { md: 120, lg: 50 },
@@ -72,19 +72,19 @@ const News = () => {
             >
               <MenuItem
                 value="most_recent"
-                className="font-rubik sm:text-3xl lg:text-sm"
+                className="font-rubik sm:text-4xl lg:text-sm"
               >
                 Le plus récent
               </MenuItem>
               <MenuItem
                 value="less_recent"
-                className="font-rubik sm:text-3xl lg:text-sm"
+                className="font-rubik sm:text-4xl lg:text-sm"
               >
                 Le moins récent
               </MenuItem>
               <MenuItem
                 value="popularity"
-                className="font-rubik sm:text-3-xl lg:text-sm"
+                className="font-rubik sm:text-4xl lg:text-sm"
               >
                 Le plus populaire
               </MenuItem>
@@ -109,16 +109,16 @@ const News = () => {
                   <p className="font-rubik font-light sm:text-3xl lg:text-sm sm:mt-5 lg:mt-2 ">
                     {item.description}
                   </p>
-                  <p className="font-rubik sm:text-2xl lg:text-xs sm:mt-5 lg:mt-2">
+                  <p className="font-rubik sm:text-3xl lg:text-xs sm:mt-5 lg:mt-2">
                     Publié le {item.publicationDate.getDay()}/{" "}
                     {item.publicationDate.getMonth()}/{" "}
                     {item.publicationDate.getFullYear()}
                   </p>
-                  <div className="flex mt-3">
+                  <div className="flex sm:mt-5 lg:mt-2">
                     {item.tags.map((tag) => (
                       <Chip
                         label={
-                          <span className="font-rubik font-normal sm:text-2xl lg:text-xs italic">
+                          <span className="font-rubik font-normal sm:text-3xl lg:text-xs italic">
                             {tag}
                           </span>
                         }
@@ -128,11 +128,11 @@ const News = () => {
                   </div>
                 </CardContent>
                 <CardActions className="sm:py-10 lg:py-3 flex justify-center">
-                  <IconButton>
-                    <AiOutlineShareAlt className="sm:text-5xl lg:text-xl" />
+                  <IconButton className="sm:mr-4 lg:mr-2">
+                    <AiOutlineShareAlt className="sm:text-7xl lg:text-2xl" />
                   </IconButton>
                   <IconButton>
-                    <MdOutlineBookmarkBorder className="sm:text-5xl lg:text-xl" />
+                    <MdOutlineBookmarkBorder className="sm:text-7xl lg:text-2xl" />
                   </IconButton>
                 </CardActions>
               </CardActionArea>
