@@ -12,7 +12,7 @@ const Header = () => {
   const [openSmallScreensMenu, setOpenSmallScreensMenu] = React.useState(false);
 
   return (
-    <div className="fixed top-0 left-0 w-full sm:px-10 lg:px-10 bg-white">
+    <div className="fixed top-0 left-0 w-full sm:px-10 lg:px-10 bg-white z-40">
       <div className="w-full flex justify-between items-center border-b border-b-primary sm:py-10 lg:py-7">
         <div className="flex justify-between items-center">
           <h1 className="font-playfair font-semibold sm:text-8xl lg:text-3xl bg-white">
