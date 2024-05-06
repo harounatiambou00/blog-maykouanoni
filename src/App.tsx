@@ -2,7 +2,12 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import { Footer, Header } from "./components";
 import { AboutMe, ContactMe, Home, MontrealNewspaper, News } from "./pages";
-import { SignInPage, Dashboard, AdminLayout } from "./pages/admins";
+import {
+  SignInPage,
+  Dashboard,
+  AdminLayout,
+  AdminNewsPage,
+} from "./pages/admins";
 import React from "react";
 
 function App() {
@@ -36,6 +41,7 @@ function App() {
             <Route path="sign-in" element={<SignInPage />} />
             <Route path="admin" element={<AdminLayout />}>
               <Route path="" element={<Dashboard />} />
+              <Route path="news" element={<AdminNewsPage />} />
             </Route>
           </Route>
         </Routes>

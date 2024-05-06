@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  ul,
+  ol {
+    list-style: revert;
+    padding: 10px;
+  }
+}
+
+@layer base {
+  blockquote {
+    border-left: 4px solid black;
+    background: #dbdada;
+    padding: 10px;
+  }
+}
+
+@layer base {
+  code {
+    border-radius: 5px;
+    background: black;
+    color: white;
+    padding: 10px;
+  }
+}

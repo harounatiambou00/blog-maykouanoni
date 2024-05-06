@@ -21,7 +21,7 @@ const ContactMe = () => {
           <div className="flex items-center mb-2">
             <BsBuildings className="text-2xl" />
             <span className="ml-2">
-              1249 Rue d'Angouleme, Chicoutimi, G7H 5A2, Canada
+              1249 Somewhere ST, Montreal, YYY YYY, Canada
             </span>
           </div>
           <div className="flex items-center mb-2">
@@ -30,7 +30,7 @@ const ContactMe = () => {
           </div>
           <div className="flex items-center mb-2">
             <MdOutlineEmail className="text-2xl" />
-            <span className="ml-2">a.w.tiambou.pro@gmail.com</span>
+            <span className="ml-2">someone@gmail.com</span>
           </div>
         </div>
         <div className="grid sm:grid-cols-1 lg:grid-cols-2 w-7/12 sm:px-10 lg:px-5 sm:mt-10 lg:mt-10 sm:gap-5 lg:gap-5 h-fit">

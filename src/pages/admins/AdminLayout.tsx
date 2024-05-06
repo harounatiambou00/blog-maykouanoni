@@ -16,10 +16,16 @@ const AdminLayout = () => {
           <Avatar />
         </div>
 
-        <div className="w-full px-5 mt-5 font-rubik hover:bg-gray-100 bg-opacity-15 cursor-pointer py-2">
+        <div
+          className="w-full px-5 mt-5 font-rubik hover:bg-gray-100 bg-opacity-15 cursor-pointer py-2"
+          onClick={() => navigate("/admin")}
+        >
           Tableau de bord
         </div>
-        <div className="w-full px-5 mt-5 font-rubik hover:bg-gray-100 bg-opacity-15 cursor-pointer py-2">
+        <div
+          className="w-full px-5 mt-5 font-rubik hover:bg-gray-100 bg-opacity-15 cursor-pointer py-2"
+          onClick={() => navigate("/admin/news")}
+        >
           Actualites
         </div>
         <div className="w-full mt-5  px-5 font-rubik hover:bg-gray-100 bg-opacity-15 cursor-pointer py-2">

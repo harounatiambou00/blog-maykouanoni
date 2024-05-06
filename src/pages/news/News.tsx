@@ -14,9 +14,11 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
-import { news } from "../../data/NewsItem";
 import { AiOutlineSearch, AiOutlineShareAlt } from "react-icons/ai";
 import { MdOutlineBookmarkBorder } from "react-icons/md";
+import { collection, getDocs } from "firebase/firestore";
+import { firestore } from "../../config/firebase-config";
+import NewsItemDetailsCard from "../../components/core/news-item-details-card/NewsItemDetailsCard";
 
 const News = () => {
   const [currentPage, setCurrentPage] = React.useState<number>(1);
@@ -30,7 +32,19 @@ const News = () => {
   const [numberOfPages, setNumberOfPages] = React.useState<number>(1);
 
   const [sortBy, setSortBy] = React.useState("most_recent");
-
+  const [news, setNews] = React.useState<any[]>([]);
+  const getNews = async () => {
+    await getDocs(collection(firestore, "news")).then((querySnapshot) => {
+      const newData = querySnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      setNews(newData);
+    });
+  };
+  React.useEffect(() => {
+    getNews();
+  }, []);
   return (
     <PageLayout title="L' actualité">
       <div className="w-full sm:mt-10 lg:mt-5 sm:mb-24 lg:mb-16">
@@ -93,50 +107,7 @@ const News = () => {
         </div>
         <div className="w-full grid sm:grid-cols-1 lg:grid-cols-3 sm:gap-20 lg:gap-10 my-10 -z-10 ">
           {news.map((item, index) => (
-            <Card key={index} className="cursor-pointer shadow h-fit">
-              <CardActionArea>
-                <CardMedia
-                  sx={{}}
-                  alt={item.title}
-                  src={item.image}
-                  component="img"
-                  className=""
-                />
-                <CardContent className="">
-                  <h1 className="font-medium font-playfair sm:text-5xl lg:text-base">
-                    {item.title}
-                  </h1>
-                  <p className="font-rubik font-light sm:text-3xl lg:text-sm sm:mt-5 lg:mt-2 ">
-                    {item.description}
-                  </p>
-                  <p className="font-rubik sm:text-3xl lg:text-xs sm:mt-5 lg:mt-2">
-                    Publié le {item.publicationDate.getDay()}/{" "}
-                    {item.publicationDate.getMonth()}/{" "}
-                    {item.publicationDate.getFullYear()}
-                  </p>
-                  <div className="flex sm:mt-5 lg:mt-2">
-                    {item.tags.map((tag) => (
-                      <Chip
-                        label={
-                          <span className="font-rubik font-normal sm:text-3xl lg:text-xs italic">
-                            {tag}
-                          </span>
-                        }
-                        className="mr-2"
-                      />
-                    ))}
-                  </div>
-                </CardContent>
-                <CardActions className="sm:py-10 lg:py-3 flex justify-center">
-                  <IconButton className="sm:mr-4 lg:mr-2">
-                    <AiOutlineShareAlt className="sm:text-7xl lg:text-2xl" />
-                  </IconButton>
-                  <IconButton>
-                    <MdOutlineBookmarkBorder className="sm:text-7xl lg:text-2xl" />
-                  </IconButton>
-                </CardActions>
-              </CardActionArea>
-            </Card>
+            <NewsItemDetailsCard item={item} key={index} />
           ))}
         </div>
         <div className="w-full flex items-center justify-center mt-5">
