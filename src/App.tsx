@@ -43,6 +43,7 @@ function App() {
             <Route path="about-me" element={<AboutMe />} />
             <Route path="contact-me" element={<ContactMe />} />
             <Route index path="news" element={<News />} />
+            <Route index element={<News />} />
             <Route path="news/:newsItemId" element={<NewsItemDetails />} />
             <Route
               path="finance-and-business"
