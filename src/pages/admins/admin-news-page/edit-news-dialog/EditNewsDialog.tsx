@@ -16,23 +16,31 @@ import {
 import React from "react";
 import {
   AiFillPlusCircle,
-  AiOutlineArrowDown,
   AiOutlinePlus,
   AiOutlineSave,
   AiTwotonePicture,
 } from "react-icons/ai";
-import { BsFillSave2Fill, BsTrash } from "react-icons/bs";
-import { MdClose, MdDelete, MdEdit, MdKeyboardArrowDown } from "react-icons/md";
+import { MdClose, MdDelete, MdEdit } from "react-icons/md";
 import { TiptapTextEditor } from "../../../../components/core";
 import { firestore, storage } from "../../../../config/firebase-config";
-import { ref, uploadBytes } from "firebase/storage";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { v4 } from "uuid";
-import { addDoc, collection } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import { TransitionProps } from "@mui/material/transitions";
-import AddedSectionItem from "./added-sections-item/AddedSectionItem";
+import AddedSectionItem from "../add-news-dialod/added-sections-item/AddedSectionItem";
+
 type Props = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  newsData: {
+    id: string;
+    title: string;
+    subtitle: string;
+    author: string;
+    description: string;
+    imageName: string;
+    sections: SectionType[];
+  };
   refreshNews: () => void;
 };
 
@@ -51,23 +59,45 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const AddNewsDialog = ({ open, setOpen, refreshNews }: Props) => {
+const EditNewsDialog = ({ open, setOpen, newsData, refreshNews }: Props) => {
+  const [newsImageBase64, setNewsImageBase64] = React.useState<string | null>(
+    null
+  );
+  const getNewsItemImage = async () => {
+    let imageRef = ref(storage, newsData.imageName);
+    try {
+      // Retrieve the download URL of the image file
+      const url = await getDownloadURL(imageRef);
+
+      // Set the image URL
+      setNewsImageBase64(url);
+    } catch (error) {
+      // Handle any errors
+      console.error("Error getting download URL:", error);
+      // You might want to set a default image URL or handle the error in another way
+      // For example:
+      // setItemImage('defaultImageURL');
+    }
+  };
+  React.useEffect(() => {
+    getNewsItemImage();
+  }, []);
   const [values, setValues] = React.useState({
-    title: "",
-    subtitle: "",
-    author: "",
-    description: "",
-    imageName: "",
+    title: newsData.title,
+    subtitle: newsData.subtitle,
+    author: newsData.author,
+    description: newsData.description,
+    imageName: newsData.imageName,
   });
   const [currentSectionToBeAddedContent, setCurrentSectionToBeAdded] =
     React.useState<SectionType | null>(null);
 
-  const [sections, setSections] = React.useState<SectionType[]>([]);
+  const [sections, setSections] = React.useState<SectionType[]>(
+    newsData.sections
+  );
   const imageInputRef = React.useRef<HTMLInputElement>(null);
   const [newsImage, setNewsImage] = React.useState<File | null>(null);
-  const [newsImageBase64, setNewsImageBase64] = React.useState<string | null>(
-    null
-  );
+
   const [imageRequiredError, setImageRequiredError] = React.useState(false);
   const [titleRequiredError, setTitleRequiredError] = React.useState(false);
   const [authorRequiredError, setAuthorRequiredError] = React.useState(false);
@@ -76,7 +106,7 @@ const AddNewsDialog = ({ open, setOpen, refreshNews }: Props) => {
   const [atLeastOneSectionRequiredError, setAtLeastOneSectionRequiredError] =
     React.useState(false);
   const handleSave = async () => {
-    if (newsImage === null || newsImageBase64 === null) {
+    if (newsImage === null && newsImageBase64 === null) {
       setImageRequiredError(true);
       return;
     } else {
@@ -113,12 +143,12 @@ const AddNewsDialog = ({ open, setOpen, refreshNews }: Props) => {
       descriptionRequiredError === false &&
       atLeastOneSectionRequiredError === false
     ) {
-      //Adding the image
+      // Updating the image if a new one is provided
       let generatedFileName = undefined;
       if (newsImage) {
         generatedFileName = newsImage.name + v4();
         let imageRef = ref(storage, generatedFileName);
-        let addingImageResponse = uploadBytes(imageRef, newsImage);
+        let addingImageResponse = await uploadBytes(imageRef, newsImage);
       }
       const today = new Date();
       const yyyy = today.getFullYear();
@@ -130,27 +160,15 @@ const AddNewsDialog = ({ open, setOpen, refreshNews }: Props) => {
       if (mm < 10) mmString = "0" + mm;
 
       const formattedToday = ddString + "/" + mmString + "/" + yyyy;
-
-      const docRef = addDoc(collection(firestore, "news"), {
+      const docRef = doc(firestore, "news", newsData.id);
+      await updateDoc(docRef, {
         title: values.title,
         description: values.description,
         subtitle: values.subtitle,
         author: values.author,
-        imageName: generatedFileName ? generatedFileName : "",
-        publicationDate: formattedToday,
+        imageName: generatedFileName ? generatedFileName : newsData.imageName,
         lastModificationDate: formattedToday,
         sections: sections,
-      });
-      setSections([]);
-      setCurrentSectionToBeAdded(null);
-      setNewsImageBase64(null);
-      setNewsImage(null);
-      setValues({
-        title: "",
-        subtitle: "",
-        author: "",
-        description: "",
-        imageName: "",
       });
       await refreshNews();
       setOpen(false);
@@ -167,7 +185,7 @@ const AddNewsDialog = ({ open, setOpen, refreshNews }: Props) => {
     >
       <div className="bg-white w-full h-20 fixed z-20 flex justify-between items-center left-0 top-0 border-b px-10 py-5">
         <h1 className="font-playfair text-4xl font-semibold">
-          Ajout d'une actualité
+          Modification d'une actualité
         </h1>
         <IconButton onClick={() => setOpen(false)}>
           <MdClose />
@@ -186,11 +204,11 @@ const AddNewsDialog = ({ open, setOpen, refreshNews }: Props) => {
                 : "col-span-6 rounded-md border-2 border-dashed border-gray-700 flex items-center justify-center cursor-pointer h-80"
             }
           >
-            {newsImageBase64 && newsImage ? (
+            {newsImageBase64 ? (
               <ImageListItem className="w-full h-full">
                 <img
                   src={newsImageBase64}
-                  alt={newsImage.name}
+                  alt={newsImage ? newsImage.name : newsData.imageName}
                   className="h-full w-full"
                 />
                 <div className="absolute top-1 right-1 flex justify-between">
@@ -199,6 +217,7 @@ const AddNewsDialog = ({ open, setOpen, refreshNews }: Props) => {
                     color="error"
                     onClick={() => {
                       setNewsImage(null);
+                      setNewsImageBase64(null);
                     }}
                     className="bg-white"
                   >
@@ -231,12 +250,8 @@ const AddNewsDialog = ({ open, setOpen, refreshNews }: Props) => {
                         const reader = new FileReader();
                         reader.readAsDataURL(file);
                         reader.onloadend = () => {
-                          const reader = new FileReader();
-                          reader.readAsDataURL(file);
-                          reader.onloadend = () => {
-                            setNewsImage(file);
-                            setNewsImageBase64(reader.result as string);
-                          };
+                          setNewsImage(file);
+                          setNewsImageBase64(reader.result as string);
                         };
                       }
                     }
@@ -272,7 +287,7 @@ const AddNewsDialog = ({ open, setOpen, refreshNews }: Props) => {
               />
               {titleRequiredError && (
                 <small className="text-red-600 mt-1">
-                  Vous devez renseingner le titre de l'article.
+                  Vous devez renseigner le titre de l'article.
                 </small>
               )}
             </div>
@@ -323,7 +338,7 @@ const AddNewsDialog = ({ open, setOpen, refreshNews }: Props) => {
               />
               {descriptionRequiredError && (
                 <small className="text-red-600 mt-1">
-                  Veuillez decrire l'article.
+                  Veuillez décrire l'article.
                 </small>
               )}
             </div>
@@ -332,7 +347,7 @@ const AddNewsDialog = ({ open, setOpen, refreshNews }: Props) => {
         <div className="grid grid-cols-12 mt-10">
           <div className="col-span-12 flex items-center justify-between">
             <div className="font-playfair text-3xl">
-              2. Contenu de l' actualité
+              2. Contenu de l'actualité
             </div>
             <Button
               variant="contained"
@@ -419,7 +434,6 @@ const AddNewsDialog = ({ open, setOpen, refreshNews }: Props) => {
                   onClick={() => {
                     setSections([...sections, currentSectionToBeAddedContent]);
                     setCurrentSectionToBeAdded(null);
-                    console.log(sections);
                   }}
                 >
                   Ajouter
@@ -427,8 +441,9 @@ const AddNewsDialog = ({ open, setOpen, refreshNews }: Props) => {
               </div>
             )}
           </div>
-          {sections.map((section) => (
+          {sections.map((section, index) => (
             <AddedSectionItem
+              key={index}
               section={section}
               sections={sections}
               setSections={setSections}
@@ -443,16 +458,6 @@ const AddNewsDialog = ({ open, setOpen, refreshNews }: Props) => {
           color="error"
           size="large"
           onClick={() => {
-            setCurrentSectionToBeAdded(null);
-            setNewsImageBase64(null);
-            setNewsImage(null);
-            setValues({
-              title: "",
-              subtitle: "",
-              author: "",
-              description: "",
-              imageName: "",
-            });
             setOpen(false);
           }}
         >
@@ -472,4 +477,4 @@ const AddNewsDialog = ({ open, setOpen, refreshNews }: Props) => {
   );
 };
 
-export default AddNewsDialog;
+export default EditNewsDialog;

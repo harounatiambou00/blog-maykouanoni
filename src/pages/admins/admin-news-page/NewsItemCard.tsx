@@ -1,25 +1,34 @@
-import { collection, getDoc, getDocs } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+} from "firebase/firestore";
 import React from "react";
 import { firestore, storage } from "../../../config/firebase-config";
-import { getDownloadURL, ref } from "firebase/storage";
+import { deleteObject, getDownloadURL, ref } from "firebase/storage";
 import {
   Card,
   CardActionArea,
   CardActions,
   CardContent,
   CardMedia,
+  Dialog,
+  DialogTitle,
   IconButton,
 } from "@mui/material";
 import { AiOutlineShareAlt } from "react-icons/ai";
-import { MdOutlineBookmarkBorder } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
+import { MdDelete, MdEdit, MdOutlineBookmarkBorder } from "react-icons/md";
+import EditNewsDialog from "./edit-news-dialog/EditNewsDialog";
 
 type Props = {
   item: any;
+  refreshNews: () => void;
 };
 
-const NewsItemDetailsCard = ({ item }: Props) => {
-  const navigate = useNavigate();
+const NewsItemCard = ({ item, refreshNews }: Props) => {
+  const [openEditNewsDialog, setOpenEditNewsDialog] = React.useState(false);
   const [itemImage, setItemImage] = React.useState<string>("");
   const getNewsItemImage = async () => {
     let imageRef = ref(storage, item.imageName);
@@ -40,9 +49,34 @@ const NewsItemDetailsCard = ({ item }: Props) => {
   React.useEffect(() => {
     getNewsItemImage();
   }, []);
+
+  const deleteNews = async (newsId: string, imageName: string) => {
+    try {
+      // Supprimer le document de Firestore
+      await deleteDoc(doc(firestore, "news", newsId));
+
+      // Supprimer l'image de Firebase Storage
+      if (imageName) {
+        const imageRef = ref(storage, imageName);
+        await deleteObject(imageRef);
+      }
+
+      console.log("Actualité supprimée avec succès.");
+      await refreshNews();
+    } catch (error) {
+      console.error("Erreur lors de la suppression de l'actualité :", error);
+    }
+  };
+  const handleDelete = async () => {
+    if (
+      window.confirm("Êtes-vous sûr de vouloir supprimer cette actualité ?")
+    ) {
+      await deleteNews(item.id, item.imageName);
+    }
+  };
   return (
     <Card className="cursor-pointer shadow h-fit">
-      <CardActionArea onClick={() => navigate("/news/" + item.id)}>
+      <CardActionArea>
         <CardMedia
           sx={{}}
           alt={item.title}
@@ -74,16 +108,25 @@ const NewsItemDetailsCard = ({ item }: Props) => {
       </div> */}
         </CardContent>
         <CardActions className="sm:py-10 lg:py-3 flex justify-center">
-          <IconButton className="sm:mr-4 lg:mr-2">
-            <AiOutlineShareAlt className="sm:text-7xl lg:text-2xl" />
+          <IconButton
+            className="sm:mr-4 lg:mr-2"
+            onClick={() => setOpenEditNewsDialog(true)}
+          >
+            <MdEdit className="sm:text-7xl lg:text-2xl" />
           </IconButton>
-          <IconButton>
-            <MdOutlineBookmarkBorder className="sm:text-7xl lg:text-2xl" />
+          <IconButton color="error" onClick={() => handleDelete()}>
+            <MdDelete className="sm:text-7xl lg:text-2xl" />
           </IconButton>
         </CardActions>
       </CardActionArea>
+      <EditNewsDialog
+        open={openEditNewsDialog}
+        setOpen={setOpenEditNewsDialog}
+        newsData={item}
+        refreshNews={refreshNews}
+      />
     </Card>
   );
 };
 
-export default NewsItemDetailsCard;
+export default NewsItemCard;

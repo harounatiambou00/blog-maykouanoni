@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Alert,
   Button,
   Card,
   CardActionArea,
@@ -25,6 +26,7 @@ import { firestore } from "../../../config/firebase-config";
 import { collection, getDoc, getDocs } from "firebase/firestore";
 import { BsTrash } from "react-icons/bs";
 import NewsItemDetailsCard from "../../../components/core/news-item-details-card/NewsItemDetailsCard";
+import NewsItemCard from "./NewsItemCard";
 const AdminNewsPage = () => {
   const [news, setNews] = React.useState<any[]>([]);
   const [newsToBeDisplayed, setNewsToBeDisplayed] = React.useState([]);
@@ -54,7 +56,7 @@ const AdminNewsPage = () => {
     console.log(filteredData);
     setNews(filteredData);
   };
-
+  const refreshNews = async () => await getNews();
   return (
     <div className="w-full mx-5 sm:mt-10 lg:mt-5 sm:mb-24 lg:mb-16">
       <div className="flex sm:items-end lg:items-center justify-between w-full">
@@ -127,11 +129,19 @@ const AdminNewsPage = () => {
           </Button>
         </div>
       </div>
-      <div className="w-full grid sm:grid-cols-1 lg:grid-cols-3 sm:gap-20 lg:gap-10 my-10 -z-10 ">
-        {news.map((item, index) => (
-          <NewsItemDetailsCard item={item} key={index} />
-        ))}
-      </div>
+      {news.length === 0 ? (
+        <div className="w-full pt-10 flex items-center justify-center">
+          <Alert severity="error" className="font-kani">
+            Aucune actualité pour le moment.
+          </Alert>
+        </div>
+      ) : (
+        <div className="w-full grid sm:grid-cols-1 lg:grid-cols-3 sm:gap-20 lg:gap-10 my-10 -z-10 ">
+          {news.map((item, index) => (
+            <NewsItemCard refreshNews={refreshNews} item={item} key={index} />
+          ))}
+        </div>
+      )}
       <div className="w-full flex items-center justify-center mt-5">
         <Pagination
           page={currentPage}
@@ -144,7 +154,11 @@ const AdminNewsPage = () => {
           showLastButton
         />
       </div>
-      <AddNewsDialog open={openAddNewsDialog} setOpen={setOpenAddNewsDialog} />
+      <AddNewsDialog
+        refreshNews={refreshNews}
+        open={openAddNewsDialog}
+        setOpen={setOpenAddNewsDialog}
+      />
     </div>
   );
 };

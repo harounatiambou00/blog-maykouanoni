@@ -16,7 +16,7 @@ const Header = () => {
       <div className="w-full flex justify-between items-center border-b border-b-primary sm:py-10 lg:py-7">
         <div className="flex justify-between items-center">
           <h1 className="font-playfair font-semibold sm:text-8xl lg:text-3xl bg-white">
-            LaPresse
+            Le Decryptage
           </h1>
           <div className="ml-10 justify-between items-center sm:hidden lg:flex bg-white">
             {links.map((link, index) => (

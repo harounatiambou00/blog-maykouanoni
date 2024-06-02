@@ -1,9 +1,9 @@
 import React from "react";
 import { PageLayout } from "../../layouts";
 
-const MontrealNewspaper = () => {
+const FinanceAndBusiness = () => {
   return (
-    <PageLayout title="Le journal de montreal">
+    <PageLayout title="Finance & Business">
       <div>
         Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minima porro
         odit rerum commodi cumque, molestias ut minus accusamus eum ipsum quis
@@ -14,4 +14,4 @@ const MontrealNewspaper = () => {
   );
 };
 
-export default MontrealNewspaper;
+export default FinanceAndBusiness;

@@ -1,6 +1,7 @@
 import React from "react";
 import { PageLayout } from "../../layouts";
 import {
+  Alert,
   Card,
   CardActionArea,
   CardActions,
@@ -33,6 +34,7 @@ const News = () => {
 
   const [sortBy, setSortBy] = React.useState("most_recent");
   const [news, setNews] = React.useState<any[]>([]);
+  const [newsToBeDisplayed, setNewsToBeDisplayed] = React.useState<any[]>([]);
   const getNews = async () => {
     await getDocs(collection(firestore, "news")).then((querySnapshot) => {
       const newData = querySnapshot.docs.map((doc) => ({
@@ -45,11 +47,29 @@ const News = () => {
   React.useEffect(() => {
     getNews();
   }, []);
+
+  React.useEffect(() => {
+    setNewsToBeDisplayed(news);
+  }, [news]);
+
+  const [searchCriteria, setSearchCriteria] = React.useState("");
+  React.useEffect(() => {
+    if (searchCriteria === "") setNewsToBeDisplayed(news);
+    else {
+      setNewsToBeDisplayed(
+        news.filter((n) =>
+          n.title.toLowerCase().includes(searchCriteria.toLowerCase())
+        )
+      );
+    }
+  }, [searchCriteria]);
   return (
     <PageLayout title="L' actualité">
       <div className="w-full sm:mt-10 lg:mt-5 sm:mb-24 lg:mb-16">
         <div className="flex sm:items-end lg:items-center justify-between w-full">
           <OutlinedInput
+            value={searchCriteria}
+            onChange={(e) => setSearchCriteria(e.target.value)}
             inputProps={{
               sx: {},
             }}
@@ -105,11 +125,19 @@ const News = () => {
             </Select>
           </div>
         </div>
-        <div className="w-full grid sm:grid-cols-1 lg:grid-cols-3 sm:gap-20 lg:gap-10 my-10 -z-10 ">
-          {news.map((item, index) => (
-            <NewsItemDetailsCard item={item} key={index} />
-          ))}
-        </div>
+        {news.length === 0 ? (
+          <div className="w-full flex justify-center items-center my-20">
+            <Alert severity="error" className="font-kanit">
+              Aucune actualité ajouté pour le moment.
+            </Alert>
+          </div>
+        ) : (
+          <div className="w-full grid sm:grid-cols-1 lg:grid-cols-3 sm:gap-20 lg:gap-10 my-10 -z-10 ">
+            {newsToBeDisplayed.map((item, index) => (
+              <NewsItemDetailsCard item={item} key={index} />
+            ))}
+          </div>
+        )}
         <div className="w-full flex items-center justify-center mt-5">
           <Pagination
             page={currentPage}

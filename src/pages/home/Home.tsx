@@ -3,7 +3,7 @@ import { PageLayout } from "../../layouts";
 
 const Home = () => {
   return (
-    <PageLayout title="Acceuil">
+    <PageLayout title="Accueil">
       <div>
         Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minima porro
         odit rerum commodi cumque, molestias ut minus accusamus eum ipsum quis
