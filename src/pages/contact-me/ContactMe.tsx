@@ -1,7 +1,7 @@
 import React from "react";
 import { PageLayout } from "../../layouts";
 import { BsBuildings } from "react-icons/bs";
-import { MdOutlineLocalPhone } from "react-icons/md";
+import { MdOutlineLocalPhone, MdSend } from "react-icons/md";
 import { MdOutlineEmail } from "react-icons/md";
 import { Button, TextField } from "@mui/material";
 
@@ -58,13 +58,15 @@ const ContactMe = () => {
             fullWidth
             multiline
             rows={5}
-            label={<span className="font-rubik">Nom</span>}
+            label={<span className="font-rubik">Message</span>}
             className="font-rubik col-span-2"
           />
 
           <Button
             variant="contained"
             className="font-rubik mt-2 bg-primary w-fit uppercase text-sm"
+            size="large"
+            startIcon={<MdSend />}
           >
             Envoyer
           </Button>
