@@ -2,13 +2,6 @@ import React from "react";
 import { PageLayout } from "../../layouts";
 import {
   Alert,
-  Card,
-  CardActionArea,
-  CardActions,
-  CardContent,
-  CardMedia,
-  Chip,
-  IconButton,
   MenuItem,
   OutlinedInput,
   Pagination,
@@ -16,10 +9,10 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import { AiOutlineSearch, AiOutlineShareAlt } from "react-icons/ai";
-import { MdOutlineBookmarkBorder } from "react-icons/md";
 import { collection, getDocs } from "firebase/firestore";
 import { firestore } from "../../config/firebase-config";
 import NewsItemDetailsCard from "../../components/core/news-item-details-card/NewsItemDetailsCard";
+import NewsType from "../../data/NewsType";
 
 const News = () => {
   const [currentPage, setCurrentPage] = React.useState<number>(1);
@@ -33,15 +26,15 @@ const News = () => {
   const [numberOfPages, setNumberOfPages] = React.useState<number>(1);
 
   const [sortBy, setSortBy] = React.useState("most_recent");
-  const [news, setNews] = React.useState<any[]>([]);
+  const [news, setNews] = React.useState<NewsType[]>([]);
   const [newsToBeDisplayed, setNewsToBeDisplayed] = React.useState<any[]>([]);
   const getNews = async () => {
     await getDocs(collection(firestore, "news")).then((querySnapshot) => {
-      const newData = querySnapshot.docs.map((doc) => ({
+      const newsData = querySnapshot.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
       }));
-      setNews(newData);
+      setNews(newsData as NewsType[]);
     });
   };
   React.useEffect(() => {
@@ -81,7 +74,7 @@ const News = () => {
             startAdornment={
               <AiOutlineSearch className="sm:text-5xl lg:text-3xl mr-3" />
             }
-            className="font-rubik sm:w-1/2 lg:w-2/6 sm:text-3xl lg:text-base placeholder:sm:text-3xl placeholder:lg:text-base placeholder:font-rubik placeholder:text-gray-400"
+            className="font-playwrite sm:w-1/2 lg:w-2/6 sm:text-3xl lg:text-base placeholder:sm:text-3xl placeholder:lg:text-base placeholder:font-playwrite placeholder:text-gray-400"
             placeholder="Recherchez une actu par son titre ou son auteur."
           />
           <div className="flex sm:flex-col lg:flex-row sm:items-start lg:items-center">
@@ -94,7 +87,7 @@ const News = () => {
                 setSortBy(event.target.value as string);
               }}
               MenuProps={{}}
-              className="font-rubik sm:text-4xl lg:text-sm"
+              className="font-playwrite sm:text-4xl lg:text-sm"
               inputProps={{
                 sx: {
                   height: { md: 120, lg: 50 },
@@ -106,19 +99,19 @@ const News = () => {
             >
               <MenuItem
                 value="most_recent"
-                className="font-rubik sm:text-4xl lg:text-sm"
+                className="font-playwrite sm:text-4xl lg:text-sm"
               >
                 Le plus récent
               </MenuItem>
               <MenuItem
                 value="less_recent"
-                className="font-rubik sm:text-4xl lg:text-sm"
+                className="font-playwrite sm:text-4xl lg:text-sm"
               >
                 Le moins récent
               </MenuItem>
               <MenuItem
                 value="popularity"
-                className="font-rubik sm:text-4xl lg:text-sm"
+                className="font-playwrite sm:text-4xl lg:text-sm"
               >
                 Le plus populaire
               </MenuItem>

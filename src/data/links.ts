@@ -3,21 +3,26 @@ type LinkType = { id: number; title: string; to: string };
 const links: LinkType[] = [
   {
     id: 1,
-    title: "Qui suis-je ?",
-    to: "/about-me",
+    title: "Acceuil",
+    to: "/",
   },
-  {
+  /*{
     id: 2,
+    title: "À propos",
+    to: "/about",
+  },*/
+  {
+    id: 3,
     title: "Actualité",
     to: "/news",
   },
   {
-    id: 3,
+    id: 4,
     title: "Finance & affaires",
     to: "/finance-and-business",
   },
   {
-    id: 4,
+    id: 5,
     title: "Contacts",
     to: "/contact-me",
   },

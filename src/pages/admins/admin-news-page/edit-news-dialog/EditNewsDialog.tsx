@@ -9,7 +9,9 @@ import {
   IconButton,
   ImageListItem,
   ImageListItemBar,
+  MenuItem,
   OutlinedInput,
+  Select,
   Slide,
   TextField,
 } from "@mui/material";
@@ -21,33 +23,27 @@ import {
   AiTwotonePicture,
 } from "react-icons/ai";
 import { MdClose, MdDelete, MdEdit } from "react-icons/md";
-import { TiptapTextEditor } from "../../../../components/core";
+import { LoadingBackdrop, TiptapTextEditor } from "../../../../components/core";
 import { firestore, storage } from "../../../../config/firebase-config";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { v4 } from "uuid";
 import { doc, updateDoc } from "firebase/firestore";
 import { TransitionProps } from "@mui/material/transitions";
 import AddedSectionItem from "../add-news-dialod/added-sections-item/AddedSectionItem";
+import NewsType, {
+  NewsCategoriesType,
+  NewsSubjectsType,
+  newsCategories,
+  newsSubjects,
+} from "../../../../data/NewsType";
+import NewsSection from "../../../../data/NewsSectionType";
+import TagsInput from "../add-news-dialod/TagsInput";
 
 type Props = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  newsData: {
-    id: string;
-    title: string;
-    subtitle: string;
-    author: string;
-    description: string;
-    imageName: string;
-    sections: SectionType[];
-  };
+  newsData: NewsType;
   refreshNews: () => void;
-};
-
-export type SectionType = {
-  ranking: number;
-  title: string;
-  content: string;
 };
 
 const Transition = React.forwardRef(function Transition(
@@ -64,7 +60,7 @@ const EditNewsDialog = ({ open, setOpen, newsData, refreshNews }: Props) => {
     null
   );
   const getNewsItemImage = async () => {
-    let imageRef = ref(storage, newsData.imageName);
+    let imageRef = ref(storage, newsData.imageUrl);
     try {
       // Retrieve the download URL of the image file
       const url = await getDownloadURL(imageRef);
@@ -85,14 +81,23 @@ const EditNewsDialog = ({ open, setOpen, newsData, refreshNews }: Props) => {
   const [values, setValues] = React.useState({
     title: newsData.title,
     subtitle: newsData.subtitle,
-    author: newsData.author,
     description: newsData.description,
-    imageName: newsData.imageName,
+    createdBy: newsData.createdBy,
+    authorName: newsData.authorName,
+    imageUrl: newsData.imageUrl,
   });
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [category, setCategory] = React.useState<NewsCategoriesType>(
+    newsData.category
+  );
+  const [tags, setTags] = React.useState<string[]>(newsData.tags);
+  const [subject, setSubject] = React.useState<NewsSubjectsType>(
+    newsData.subject
+  );
   const [currentSectionToBeAddedContent, setCurrentSectionToBeAdded] =
-    React.useState<SectionType | null>(null);
+    React.useState<NewsSection | null>(null);
 
-  const [sections, setSections] = React.useState<SectionType[]>(
+  const [sections, setSections] = React.useState<NewsSection[]>(
     newsData.sections
   );
   const imageInputRef = React.useRef<HTMLInputElement>(null);
@@ -118,7 +123,7 @@ const EditNewsDialog = ({ open, setOpen, newsData, refreshNews }: Props) => {
     } else {
       setTitleRequiredError(false);
     }
-    if (values.author === "") {
+    if (values.authorName === "") {
       setAuthorRequiredError(true);
       return;
     } else {
@@ -165,8 +170,8 @@ const EditNewsDialog = ({ open, setOpen, newsData, refreshNews }: Props) => {
         title: values.title,
         description: values.description,
         subtitle: values.subtitle,
-        author: values.author,
-        imageName: generatedFileName ? generatedFileName : newsData.imageName,
+        author: values.authorName,
+        imageName: generatedFileName ? generatedFileName : newsData.imageUrl,
         lastModificationDate: formattedToday,
         sections: sections,
       });
@@ -194,7 +199,7 @@ const EditNewsDialog = ({ open, setOpen, newsData, refreshNews }: Props) => {
 
       <div className="px-10 py-24 h-screen overflow-y-scroll">
         <div className="grid grid-cols-12 gap-5 mt-3">
-          <div className="col-span-12 font-playfair text-3xl">
+          <div className="col-span-12 font-kalnia text-3xl">
             1. Informations sur l'actualité
           </div>
           <div
@@ -208,7 +213,7 @@ const EditNewsDialog = ({ open, setOpen, newsData, refreshNews }: Props) => {
               <ImageListItem className="w-full h-full">
                 <img
                   src={newsImageBase64}
-                  alt={newsImage ? newsImage.name : newsData.imageName}
+                  alt={newsImage ? newsImage.name : newsData.imageUrl}
                   className="h-full w-full"
                 />
                 <div className="absolute top-1 right-1 flex justify-between">
@@ -274,47 +279,60 @@ const EditNewsDialog = ({ open, setOpen, newsData, refreshNews }: Props) => {
           </div>
           <div className="col-span-6 grid grid-cols-2 gap-5 content-start">
             <div className="col-span-2 flex flex-col">
-              <label htmlFor="" className="font-kanit text-lg align-middle">
+              <label
+                htmlFor=""
+                className="font-normal font-kalnia sm:text-4xl lg:text-lg"
+              >
                 Titre <span className="text-red-600">*</span>
               </label>
               <OutlinedInput
-                fullWidth
-                className="font-kanit font-light"
+                size="small"
                 value={values.title}
                 onChange={(e) =>
                   setValues({ ...values, title: e.target.value })
                 }
+                type="text"
+                placeholder="Veuillez saisir le titre"
+                className="rounded-lg font-playwrite font-light sm:text-4xl lg:text-base placeholder:font-playwrite placeholder:text-xs"
               />
               {titleRequiredError && (
                 <small className="text-red-600 mt-1">
-                  Vous devez renseigner le titre de l'article.
+                  Vous devez renseingner le titre de l'article.
                 </small>
               )}
             </div>
-            <div className="">
-              <label htmlFor="" className="font-kanit text-lg align-middle">
-                Sous-titre
+            <div className="flex flex-col">
+              <label
+                htmlFor=""
+                className="font-normal font-kalnia sm:text-4xl lg:text-lg"
+              >
+                Sous-titre <span className="text-red-600">*</span>
               </label>
               <OutlinedInput
-                fullWidth
-                className="font-kanit font-light"
+                size="small"
                 value={values.subtitle}
                 onChange={(e) =>
                   setValues({ ...values, subtitle: e.target.value })
                 }
+                type="text"
+                className="rounded-lg font-playwrite font-light sm:text-4xl lg:text-base"
               />
             </div>
             <div className="flex flex-col">
-              <label htmlFor="" className="font-kanit text-lg align-middle">
+              <label
+                htmlFor=""
+                className="font-normal font-kalnia sm:text-4xl lg:text-lg "
+              >
                 Auteur <span className="text-red-600">*</span>
               </label>
               <OutlinedInput
-                fullWidth
-                className="font-kanit font-light"
-                value={values.author}
+                size="small"
+                value={values.authorName}
                 onChange={(e) =>
-                  setValues({ ...values, author: e.target.value })
+                  setValues({ ...values, authorName: e.target.value })
                 }
+                type="text"
+                className="rounded-lg font-playwrite font-light sm:text-4xl lg:text-base"
               />
               {authorRequiredError && (
                 <small className="text-red-600 mt-1">
@@ -322,32 +340,108 @@ const EditNewsDialog = ({ open, setOpen, newsData, refreshNews }: Props) => {
                 </small>
               )}
             </div>
+
+            <div className="flex flex-col">
+              <label
+                htmlFor=""
+                className="font-normal font-kalnia sm:text-4xl lg:text-lg"
+              >
+                Categorie <span className="text-red-600">*</span>
+              </label>
+              <Select
+                size="small"
+                value={category}
+                onChange={(e) => {
+                  let value = e.target.value;
+                  try {
+                    setCategory(value as NewsCategoriesType);
+                  } catch {
+                    setCategory("OTHERS");
+                  }
+                }}
+                className="rounded-lg font-playwrite font-light sm:text-4xl lg:text-base"
+              >
+                {newsCategories.map((c) => (
+                  <MenuItem
+                    className="font-playwrite"
+                    key={c.key}
+                    value={c.key}
+                  >
+                    {c.label}
+                  </MenuItem>
+                ))}
+              </Select>
+              {descriptionRequiredError && (
+                <small className="text-red-600 mt-1">
+                  Veuillez decrire l'article.
+                </small>
+              )}
+            </div>
+            <div className="flex flex-col">
+              <label
+                htmlFor=""
+                className="font-normal font-kalnia sm:text-4xl lg:text-lg"
+              >
+                Sujets
+              </label>
+              <Select
+                size="small"
+                value={subject}
+                onChange={(e) => {
+                  let value = e.target.value;
+                  try {
+                    setSubject(value as NewsSubjectsType);
+                  } catch {
+                    setSubject("OTHERS");
+                  }
+                }}
+                className="rounded-lg font-playwrite font-light sm:text-4xl lg:text-base"
+              >
+                {newsSubjects.map((c) => (
+                  <MenuItem
+                    className="font-playwrite"
+                    key={c.key}
+                    value={c.key}
+                  >
+                    {c.label}
+                  </MenuItem>
+                ))}
+              </Select>
+              {descriptionRequiredError && (
+                <small className="text-red-600 mt-1">
+                  Veuillez decrire l'article.
+                </small>
+              )}
+            </div>
             <div className="col-span-2 flex flex-col">
-              <label htmlFor="" className="font-kanit text-lg align-middle">
+              <label
+                htmlFor=""
+                className="font-normal font-kalnia sm:text-4xl lg:text-lg"
+              >
                 Description <span className="text-red-600">*</span>
               </label>
               <OutlinedInput
-                fullWidth
-                className="font-kanit font-light"
+                size="small"
                 value={values.description}
                 onChange={(e) =>
                   setValues({ ...values, description: e.target.value })
                 }
-                multiline
-                rows={2}
+                type="text"
+                className="rounded-lg font-playwrite font-light sm:text-4xl lg:text-base"
               />
               {descriptionRequiredError && (
                 <small className="text-red-600 mt-1">
-                  Veuillez décrire l'article.
+                  Veuillez decrire l'article.
                 </small>
               )}
             </div>
+            <TagsInput tags={tags} setTags={setTags} />
           </div>
         </div>
         <div className="grid grid-cols-12 mt-10">
           <div className="col-span-12 flex items-center justify-between">
-            <div className="font-playfair text-3xl">
-              2. Contenu de l'actualité
+            <div className="font-kalnia text-3xl">
+              2. Contenu de l' actualité
             </div>
             <Button
               variant="contained"
@@ -355,13 +449,13 @@ const EditNewsDialog = ({ open, setOpen, newsData, refreshNews }: Props) => {
               startIcon={<AiOutlinePlus />}
               className={
                 currentSectionToBeAddedContent !== null
-                  ? "font-rubik font-light tracking-normal"
-                  : "font-rubik font-light tracking-normal bg-primary"
+                  ? "font-playwrite normal-case font-light tracking-normal"
+                  : "font-playwrite normal-case tracking-normal bg-primary"
               }
               disabled={currentSectionToBeAddedContent !== null}
               onClick={() =>
                 setCurrentSectionToBeAdded({
-                  ranking: sections.length + 1,
+                  id: sections.length + 1,
                   title: "",
                   content: "",
                 })
@@ -379,17 +473,17 @@ const EditNewsDialog = ({ open, setOpen, newsData, refreshNews }: Props) => {
           )}
           <div className="col-span-12 pl-5 grid grid-cols-12 gap-3">
             {currentSectionToBeAddedContent && (
-              <div className="col-span-12 text-xl mt-3 font-playfair">
+              <div className="col-span-12 text-xl mt-3 font-kalnia">
                 Ajout d'une nouvelle section
               </div>
             )}
             {currentSectionToBeAddedContent && (
               <>
-                <h1 className="font-medium mt-3 col-span-12">
+                <h1 className="font-medium font-kalnia mt-3 col-span-12">
                   Titre de la section
                 </h1>
-                <TextField
-                  className="col-span-12 text-rubik"
+                <OutlinedInput
+                  className="col-span-12 font-playwrite"
                   size="small"
                   value={currentSectionToBeAddedContent.title}
                   onChange={(e) =>
@@ -403,7 +497,9 @@ const EditNewsDialog = ({ open, setOpen, newsData, refreshNews }: Props) => {
             )}
             {currentSectionToBeAddedContent && (
               <>
-                <h1 className="font-medium mt-3 col-span-12">Contenu</h1>
+                <h1 className="font-medium font-kalnia mt-3 col-span-12">
+                  Contenu
+                </h1>
                 <TiptapTextEditor
                   content={currentSectionToBeAddedContent.content}
                   setContent={(newContent: string) =>
@@ -418,7 +514,7 @@ const EditNewsDialog = ({ open, setOpen, newsData, refreshNews }: Props) => {
             {currentSectionToBeAddedContent && (
               <div className="flex items-center justify-end col-span-12 mt-3">
                 <Button
-                  className="font-rubik font-normal tracking-normal mr-5"
+                  className="font-playwrite font-normal normal-case tracking-normal mr-5"
                   variant="outlined"
                   color="error"
                   size="small"
@@ -427,13 +523,14 @@ const EditNewsDialog = ({ open, setOpen, newsData, refreshNews }: Props) => {
                   Annuler
                 </Button>
                 <Button
-                  className="font-rubik font-normal bg-primary tracking-normal"
+                  className="font-playwrite font-normal normal-case bg-primary tracking-normal"
                   startIcon={<AiFillPlusCircle />}
                   variant="contained"
                   size="small"
                   onClick={() => {
                     setSections([...sections, currentSectionToBeAddedContent]);
                     setCurrentSectionToBeAdded(null);
+                    console.log(sections);
                   }}
                 >
                   Ajouter
@@ -441,9 +538,8 @@ const EditNewsDialog = ({ open, setOpen, newsData, refreshNews }: Props) => {
               </div>
             )}
           </div>
-          {sections.map((section, index) => (
+          {sections.map((section) => (
             <AddedSectionItem
-              key={index}
               section={section}
               sections={sections}
               setSections={setSections}
@@ -453,18 +549,33 @@ const EditNewsDialog = ({ open, setOpen, newsData, refreshNews }: Props) => {
       </div>
       <div className="bg-white w-full h-20 fixed z-20 flex justify-end items-center left-0 bottom-0 border-t px-10 p-5">
         <Button
-          className="font-rubik font-normal tracking-normal mr-5"
+          className="font-kalnia normal-case font-normal tracking-normal mr-5"
           variant="outlined"
           color="error"
           size="large"
           onClick={() => {
+            setSections([]);
+            setCurrentSectionToBeAdded(null);
+            setNewsImageBase64(null);
+            setNewsImage(null);
+            setValues({
+              title: "",
+              subtitle: "",
+              description: "",
+              createdBy: "",
+              authorName: "",
+              imageUrl: "",
+            });
+            setCategory("OTHERS");
+            setTags([]);
+            setSubject("OTHERS");
             setOpen(false);
           }}
         >
           Annuler
         </Button>
         <Button
-          className="font-rubik font-normal bg-primary tracking-normal"
+          className="font-kalnia normal-case font-normal bg-primary tracking-normal"
           startIcon={<AiOutlineSave />}
           variant="contained"
           size="large"
@@ -473,6 +584,7 @@ const EditNewsDialog = ({ open, setOpen, newsData, refreshNews }: Props) => {
           Enregistrer
         </Button>
       </div>
+      <LoadingBackdrop isLoading={isLoading} />
     </Dialog>
   );
 };

@@ -3,13 +3,22 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { firestore, storage } from "../../config/firebase-config";
 import { doc, getDoc } from "firebase/firestore";
-import { SectionType } from "../admins/admin-news-page/add-news-dialod/AddNewsDialog";
 import { Avatar, IconButton } from "@mui/material";
-import { MdShare } from "react-icons/md";
+import { CiShare1, CiBookmark } from "react-icons/ci";
+import NewsSection from "../../data/NewsSectionType";
+import NewsType from "../../data/NewsType";
+import { SlLike } from "react-icons/sl";
+import CommentsList from "./comments-list/CommentsList";
+import { TiHeart, TiHeartOutline } from "react-icons/ti";
+import { useAppSelector } from "../../hooks";
+import { RootState } from "../../redux/store";
+import { disLikeArticle, likeArticle } from "../../services/NewsService";
 
 const NewsItemDetails = () => {
   const { newsItemId } = useParams();
-  const [newsItem, setNewsItem] = React.useState<any | undefined>(undefined);
+  const [newsItem, setNewsItem] = React.useState<NewsType | undefined>(
+    undefined
+  );
   const navigate = useNavigate();
   const getNewsItem = async () => {
     if (newsItemId) {
@@ -18,9 +27,8 @@ const NewsItemDetails = () => {
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
-          const newsItem = { ...docSnap.data(), id: docSnap.id };
-          setNewsItem(newsItem);
-          console.log(newsItem);
+          const newsData = { ...docSnap.data(), id: docSnap.id };
+          setNewsItem(newsData as NewsType);
         } else {
           console.log("No such document!");
         }
@@ -36,7 +44,7 @@ const NewsItemDetails = () => {
   }, []);
   const [itemImage, setItemImage] = React.useState<string>("");
   const getNewsItemImage = async () => {
-    let imageRef = ref(storage, newsItem.imageName);
+    let imageRef = ref(storage, newsItem?.imageUrl);
     try {
       // Retrieve the download URL of the image file
       const url = await getDownloadURL(imageRef);
@@ -56,47 +64,72 @@ const NewsItemDetails = () => {
       getNewsItemImage();
     }
   }, [newsItem]);
+
+  let currentUser = useAppSelector(
+    (state: RootState) => state.currentUserSlice.user
+  );
+  const likeOrDisLikeArticle = async () => {
+    if (currentUser && newsItem) {
+      if (newsItem.likedBy.includes(currentUser.uid)) {
+        await disLikeArticle(newsItem, currentUser.uid);
+      } else {
+        await likeArticle(newsItem, currentUser.uid);
+      }
+      await getNewsItem();
+    }
+  };
   return (
     <div className="w-full flex items-cente justify-center mt-10 mb-14">
       {newsItem ? (
         <div className="sm:w-11/12 lg:w-8/12">
-          <h1 className="font-playfair sm:text-6xl lg:text-5xl font-semibold">
+          <h1 className="font-kalnia sm:text-6xl lg:text-5xl font-semibold">
             {newsItem.title}
           </h1>
-          <h1 className="font-rubik sm:text-3xl lg:text-xl mt-1">
+          <h1 className="font-kalnia sm:text-4xl lg:text-xl mt-1">
             {newsItem.subtitle}
           </h1>
-          <div className="my-5 border-t border-b w-full py-3 flex justify-between px-2">
+          <div className="sm:my-10 lg:my-5 border-t border-b w-full sm:py-7 lg:py-3 flex justify-between px-2">
             <div className="flex ">
               <Avatar sx={{ width: 56, height: 56 }} className="uppercase">
-                {newsItem.author[0] + newsItem.author[1]}
+                {newsItem.authorName[0] + newsItem.authorName[1]}
               </Avatar>
               <div className="ml-4">
-                <div className="font-normal sm:text-2xl lg:text-lg">
-                  {newsItem.author}
+                <div className="font-normal sm:text-4xl lg:text-lg">
+                  {newsItem.authorName}
                 </div>
                 <div className="sm:text-lg lg:text-xs">
-                  4 minutes de lecture · publié le {newsItem.publicationDate}
+                  4 minutes de lecture · publié le{" "}
+                  {newsItem.publicationDate.toString()}
                 </div>
               </div>
             </div>
             <div className="flex justify-between items-center">
               <IconButton>
-                <MdShare />
+                <CiShare1 className="sm:text-5xl lg:text-base" />
+              </IconButton>
+              <IconButton>
+                <CiBookmark className="sm:text-5xl lg:text-base" />
+              </IconButton>
+              <IconButton onClick={likeOrDisLikeArticle}>
+                {currentUser && newsItem.likedBy.includes(currentUser.uid) ? (
+                  <TiHeart className="sm:text-5xl lg:text-2xl text-primary" />
+                ) : (
+                  <TiHeartOutline className="sm:text-5xl lg:text-2xl" />
+                )}
               </IconButton>
             </div>
           </div>
-          <div className="sm:text-lg lg:text-xs text-right">
-            Dernière mis à jour {newsItem.lastModificationDate}
+          <div className="sm:text-lg lg:text-xs text-right ">
+            Dernière mis à jour {newsItem.lastModification.toString()}
           </div>
           {itemImage && (
             <img src={itemImage} alt={newsItem.title} className="mt-5" />
           )}
           <div className="mt-10">
-            {newsItem.sections.map((section: SectionType) => (
-              <div className="">
+            {newsItem.sections.map((section: NewsSection) => (
+              <div className="" key={section.id}>
                 {section.title !== "" && (
-                  <h1 className="font-kanit sm:text-6xl lg:text-3xl font-semibold">
+                  <h1 className="font-kanit sm:text-5xl lg:text-xl font-semibold">
                     {section.title}
                   </h1>
                 )}
@@ -104,11 +137,13 @@ const NewsItemDetails = () => {
                   dangerouslySetInnerHTML={{
                     __html: section.content,
                   }}
-                  className="font-rubik sm:text-2xl lg:text-lg leading-loose"
+                  className="font-kalnia sm:text-4xl lg:text-lg leading-loose"
                 ></div>
               </div>
             ))}
           </div>
+
+          <CommentsList newsId={newsItem.id} />
         </div>
       ) : (
         <div></div>

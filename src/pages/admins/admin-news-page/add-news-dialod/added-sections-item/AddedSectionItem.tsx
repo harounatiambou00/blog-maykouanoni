@@ -10,14 +10,14 @@ import {
 import React from "react";
 import { BsTrash } from "react-icons/bs";
 import { MdEdit, MdKeyboardArrowDown } from "react-icons/md";
-import { SectionType } from "../AddNewsDialog";
 import { AiOutlineSave } from "react-icons/ai";
 import { TiptapTextEditor } from "../../../../../components/core";
+import NewsSection from "../../../../../data/NewsSectionType";
 
 type Props = {
-  section: SectionType;
-  sections: SectionType[];
-  setSections: React.Dispatch<React.SetStateAction<SectionType[]>>;
+  section: NewsSection;
+  sections: NewsSection[];
+  setSections: React.Dispatch<React.SetStateAction<NewsSection[]>>;
 };
 
 const AddedSectionItem = ({ section, sections, setSections }: Props) => {
@@ -62,7 +62,7 @@ const AddedSectionItem = ({ section, sections, setSections }: Props) => {
       {isOnEdit ? (
         <AccordionActions>
           <Button
-            className="font-rubik font-normal tracking-normal mr-5"
+            className="font-playwrite font-normal tracking-normal mr-5"
             variant="outlined"
             color="error"
             size="small"
@@ -74,14 +74,14 @@ const AddedSectionItem = ({ section, sections, setSections }: Props) => {
             Annuler
           </Button>
           <Button
-            className="font-rubik font-normal bg-primary tracking-normal"
+            className="font-playwrite font-normal bg-primary tracking-normal"
             startIcon={<AiOutlineSave />}
             variant="contained"
             size="small"
             onClick={() => {
               setSections(
                 sections.map((s) => {
-                  if (s.ranking === section.ranking) return newSection;
+                  if (s.id === section.id) return newSection;
                   else return s;
                 })
               );

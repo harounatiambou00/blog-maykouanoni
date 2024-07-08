@@ -18,12 +18,12 @@ import {
   DialogTitle,
   IconButton,
 } from "@mui/material";
-import { AiOutlineShareAlt } from "react-icons/ai";
-import { MdDelete, MdEdit, MdOutlineBookmarkBorder } from "react-icons/md";
+import { MdDelete, MdEdit } from "react-icons/md";
+import NewsType from "../../../data/NewsType";
 import EditNewsDialog from "./edit-news-dialog/EditNewsDialog";
 
 type Props = {
-  item: any;
+  item: NewsType;
   refreshNews: () => void;
 };
 
@@ -31,7 +31,7 @@ const NewsItemCard = ({ item, refreshNews }: Props) => {
   const [openEditNewsDialog, setOpenEditNewsDialog] = React.useState(false);
   const [itemImage, setItemImage] = React.useState<string>("");
   const getNewsItemImage = async () => {
-    let imageRef = ref(storage, item.imageName);
+    let imageRef = ref(storage, item.imageUrl);
     try {
       // Retrieve the download URL of the image file
       const url = await getDownloadURL(imageRef);
@@ -71,7 +71,7 @@ const NewsItemCard = ({ item, refreshNews }: Props) => {
     if (
       window.confirm("Êtes-vous sûr de vouloir supprimer cette actualité ?")
     ) {
-      await deleteNews(item.id, item.imageName);
+      await deleteNews(item.id, item.imageUrl);
     }
   };
   return (
@@ -88,17 +88,17 @@ const NewsItemCard = ({ item, refreshNews }: Props) => {
           <h1 className="font-medium font-playfair sm:text-5xl lg:text-base">
             {item.title}
           </h1>
-          <p className="font-rubik font-light sm:text-3xl lg:text-sm sm:mt-5 lg:mt-2 ">
+          <p className="font-playwrite font-light sm:text-3xl lg:text-sm sm:mt-5 lg:mt-2 ">
             {item.description}
           </p>
-          <p className="font-rubik sm:text-3xl lg:text-xs sm:mt-5 lg:mt-2">
-            Publié le {item.publicationDate}
+          <p className="font-playwrite sm:text-3xl lg:text-xs sm:mt-5 lg:mt-2">
+            Publié le {item.publicationDate.toString()}
           </p>
           {/**<div className="flex sm:mt-5 lg:mt-2">
         {item.tags.map((tag) => (
           <Chip
             label={
-              <span className="font-rubik font-normal sm:text-3xl lg:text-xs italic">
+              <span className="font-playwrite font-normal sm:text-3xl lg:text-xs italic">
                 {tag}
               </span>
             }
@@ -119,12 +119,14 @@ const NewsItemCard = ({ item, refreshNews }: Props) => {
           </IconButton>
         </CardActions>
       </CardActionArea>
-      <EditNewsDialog
-        open={openEditNewsDialog}
-        setOpen={setOpenEditNewsDialog}
-        newsData={item}
-        refreshNews={refreshNews}
-      />
+      {
+        <EditNewsDialog
+          open={openEditNewsDialog}
+          setOpen={setOpenEditNewsDialog}
+          newsData={item}
+          refreshNews={refreshNews}
+        />
+      }
     </Card>
   );
 };

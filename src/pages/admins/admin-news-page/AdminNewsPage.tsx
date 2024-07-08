@@ -27,9 +27,12 @@ import { collection, getDoc, getDocs } from "firebase/firestore";
 import { BsTrash } from "react-icons/bs";
 import NewsItemDetailsCard from "../../../components/core/news-item-details-card/NewsItemDetailsCard";
 import NewsItemCard from "./NewsItemCard";
+import NewsType from "../../../data/NewsType";
 const AdminNewsPage = () => {
-  const [news, setNews] = React.useState<any[]>([]);
-  const [newsToBeDisplayed, setNewsToBeDisplayed] = React.useState([]);
+  const [news, setNews] = React.useState<NewsType[]>([]);
+  const [newsToBeDisplayed, setNewsToBeDisplayed] = React.useState<NewsType[]>(
+    []
+  );
 
   const [currentPage, setCurrentPage] = React.useState<number>(1);
   const handleChangePage = (
@@ -53,15 +56,15 @@ const AdminNewsPage = () => {
       ...doc.data(),
       id: doc.id,
     }));
-    console.log(filteredData);
-    setNews(filteredData);
+    setNews(filteredData as NewsType[]);
   };
   const refreshNews = async () => await getNews();
   return (
-    <div className="w-full mx-5 sm:mt-10 lg:mt-5 sm:mb-24 lg:mb-16">
+    <div className="w-full pr-0 p-10 sm:mb-24 lg:mb-16">
       <div className="flex sm:items-end lg:items-center justify-between w-full">
         <div className="flex items-center">
           <OutlinedInput
+            size="small"
             inputProps={{
               sx: {},
             }}
@@ -73,11 +76,11 @@ const AdminNewsPage = () => {
             startAdornment={
               <AiOutlineSearch className="sm:text-5xl lg:text-3xl mr-3" />
             }
-            className="mr-5 w-96 font-rubik sm:text-3xl lg:text-base placeholder:sm:text-3xl placeholder:lg:text-base placeholder:font-rubik placeholder:text-gray-400"
+            className="mr-5 w-96 font-playwrite sm:text-3xl lg:text-base placeholder:sm:text-3xl placeholder:lg:text-base placeholder:font-playwrite placeholder:text-gray-400"
             placeholder="Recherchez une actu par son titre ou son auteur."
           />
           <div className="flex sm:flex-col lg:flex-row sm:items-start lg:items-center">
-            <p className="sm:mb-2 lg:mb-0 mr-5 sm:font-normal lg:font-light sm:text-3xl lg:text-base">
+            <p className="sm:mb-2 lg:mb-0 mr-2 sm:font-normal lg:font-light sm:text-3xl lg:text-sm">
               Trier par :
             </p>
             <Select
@@ -85,8 +88,9 @@ const AdminNewsPage = () => {
               onChange={(event: SelectChangeEvent) => {
                 setSortBy(event.target.value as string);
               }}
+              size="small"
               MenuProps={{}}
-              className="font-rubik sm:text-4xl lg:text-sm"
+              className="font-playwrite sm:text-4xl lg:text-sm"
               inputProps={{
                 sx: {
                   height: { md: 120, lg: 30 },
@@ -98,19 +102,19 @@ const AdminNewsPage = () => {
             >
               <MenuItem
                 value="most_recent"
-                className="font-rubik sm:text-4xl lg:text-sm"
+                className="font-playwrite sm:text-4xl lg:text-sm"
               >
                 Le plus récent
               </MenuItem>
               <MenuItem
                 value="less_recent"
-                className="font-rubik sm:text-4xl lg:text-sm"
+                className="font-playwrite sm:text-4xl lg:text-sm"
               >
                 Le moins récent
               </MenuItem>
               <MenuItem
                 value="popularity"
-                className="font-rubik sm:text-4xl lg:text-sm"
+                className="font-playwrite sm:text-4xl lg:text-sm"
               >
                 Le plus populaire
               </MenuItem>
@@ -121,7 +125,7 @@ const AdminNewsPage = () => {
           <Button
             variant="contained"
             startIcon={<AiOutlinePlusCircle />}
-            className="bg-primary tracking-normal font-rubik font-light"
+            className="bg-primary tracking-normal font-kalnia font-light"
             size="large"
             onClick={() => setOpenAddNewsDialog(true)}
           >

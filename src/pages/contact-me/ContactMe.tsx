@@ -3,68 +3,152 @@ import { PageLayout } from "../../layouts";
 import { BsBuildings } from "react-icons/bs";
 import { MdOutlineLocalPhone, MdSend } from "react-icons/md";
 import { MdOutlineEmail } from "react-icons/md";
-import { Button, TextField } from "@mui/material";
+import { Button, OutlinedInput, TextField } from "@mui/material";
 
 const ContactMe = () => {
+  const [values, setValues] = React.useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    object: "",
+    message: "",
+  });
   return (
     <PageLayout title="Contacts">
-      <div className="w-full h-screen flex">
-        <div className="sm:w-full lg:w-5/12 sm:h-auto lg:h-full sm:pt-0 lg:pt-10 sm:px-10">
-          <h1 className="text-6xl font-semibold mb-10 font-playfair">
-            Laissez moi un message
+      <div className="w-full h-screen flex sm:flex-col lg:flex-row">
+        <div className="sm:w-full lg:w-5/12 sm:h-auto lg:h-full sm:pt-16 lg:pt-10 sm:px-10">
+          <h1 className="sm:text-6xl lg:text-4xl font-medium mb-10 font-kalnia">
+            Laissez nous un message
           </h1>
-          <p className="mb-5">
+          <p className="sm:mb-10 lg:mb-5 sm:text-3xl lg:text-base">
             Lorem ipsum dolor, sit amet consectetur adipisicing elit. Modi
             provident dolore, totam expedita ab temporibus, praesentium beatae
             nostrum corporis repudiandae, iure reprehenderit.
           </p>
-          <div className="flex items-center mb-2">
-            <BsBuildings className="text-2xl" />
-            <span className="ml-2">
+          <div className="flex items-center sm:mb-5 lg:mb-2">
+            <BsBuildings className="sm:text-6xl lg:text-2xl" />
+            <span className="ml-2 sm:text-3xl lg:text-base">
               1249 Somewhere ST, Montreal, YYY YYY, Canada
             </span>
           </div>
-          <div className="flex items-center mb-2">
-            <MdOutlineLocalPhone className="text-2xl" />
-            <span className="ml-2">+1 (000)-000-0000</span>
+          <div className="flex items-center sm:mb-5 lg:mb-2">
+            <MdOutlineLocalPhone className="sm:text-6xl lg:text-2xl" />
+            <span className="ml-2 sm:text-3xl lg:text-base">
+              +1 (000)-000-0000
+            </span>
           </div>
-          <div className="flex items-center mb-2">
-            <MdOutlineEmail className="text-2xl" />
-            <span className="ml-2">someone@gmail.com</span>
+          <div className="flex items-center sm:mb-5 lg:mb-2">
+            <MdOutlineEmail className="sm:text-6xl lg:text-2xl" />
+            <span className="ml-2 sm:text-3xl lg:text-base">
+              journaliinc.ca@gmail.com
+            </span>
           </div>
         </div>
-        <div className="grid sm:grid-cols-1 lg:grid-cols-2 w-7/12 sm:px-10 lg:px-5 sm:mt-10 lg:mt-10 sm:gap-5 lg:gap-5 h-fit">
-          <TextField
-            fullWidth
-            label={<span className="font-rubik">Nom</span>}
-            className="font-rubik"
-          />
-          <TextField
-            fullWidth
-            label={<span className="font-rubik">Email</span>}
-            className="font-rubik"
-          />
-          <TextField
-            fullWidth
-            label={<span className="font-rubik">Numero de telephone</span>}
-            className="font-rubik"
-          />
-          <TextField
-            fullWidth
-            label={<span className="font-rubik">Objet</span>}
-            className="font-rubik"
-          />
-          <TextField
-            fullWidth
-            multiline
-            rows={5}
-            label={<span className="font-rubik">Message</span>}
-            className="font-rubik col-span-2"
-          />
-
+        <div className="grid grid-cols-2 sm:w-full lg:w-7/12 sm:px-10 lg:px-5 sm:mt-10 lg:mt-10 sm:gap-5 lg:gap-5 h-fit">
+          <div className="flex flex-col sm:col-span-2 lg:col-span-1">
+            <label
+              htmlFor=""
+              className="font-normal font-kalnia sm:text-4xl lg:text-lg sm:mb-4 lg:mb-2"
+            >
+              Prénom
+            </label>
+            <OutlinedInput
+              value={values.firstName}
+              onChange={(e) =>
+                setValues({ ...values, firstName: e.target.value })
+              }
+              type="text"
+              placeholder="Votre prénom"
+              className="rounded-lg sm:py-4 lg:py-0 pl-2 font-playwrite font-light sm:text-4xl lg:text-base placeholder:font-playwrite"
+            />
+          </div>
+          <div className="flex flex-col sm:col-span-2 lg:col-span-1">
+            <label
+              htmlFor=""
+              className="font-normal font-kalnia sm:text-4xl lg:text-lg sm:mb-4 lg:mb-2"
+            >
+              Nom
+            </label>
+            <OutlinedInput
+              value={values.lastName}
+              onChange={(e) =>
+                setValues({ ...values, lastName: e.target.value })
+              }
+              type="text"
+              placeholder="Votre nom"
+              className="rounded-lg sm:py-4 lg:py-0 pl-2 font-playwrite font-light sm:text-4xl lg:text-base placeholder:font-playwrite"
+            />
+          </div>
+          <div className="flex flex-col sm:col-span-2 lg:col-span-1">
+            <label
+              htmlFor=""
+              className="font-normal font-kalnia sm:text-4xl lg:text-lg sm:mb-4 lg:mb-2"
+            >
+              Email
+            </label>
+            <OutlinedInput
+              value={values.email}
+              onChange={(e) => setValues({ ...values, email: e.target.value })}
+              type="text"
+              placeholder="Votre email"
+              className="rounded-lg sm:py-4 lg:py-0 pl-2 font-playwrite font-light sm:text-4xl lg:text-base placeholder:font-playwrite"
+            />
+          </div>
+          <div className="flex flex-col sm:col-span-2 lg:col-span-1">
+            <label
+              htmlFor=""
+              className="font-normal font-kalnia sm:text-4xl lg:text-lg sm:mb-4 lg:mb-2"
+            >
+              Numero de telephone
+            </label>
+            <OutlinedInput
+              value={values.phoneNumber}
+              onChange={(e) =>
+                setValues({ ...values, phoneNumber: e.target.value })
+              }
+              type="text"
+              placeholder="Votre numéro de téléphone"
+              className="rounded-lg sm:py-4 lg:py-0 pl-2 font-playwrite font-light sm:text-4xl lg:text-base placeholder:font-playwrite"
+            />
+          </div>
+          <div className="flex flex-col sm:col-span-2 lg:col-span-2">
+            <label
+              htmlFor=""
+              className="font-normal font-kalnia sm:text-4xl lg:text-lg sm:mb-4 lg:mb-2"
+            >
+              Objet
+            </label>
+            <OutlinedInput
+              value={values.object}
+              onChange={(e) => setValues({ ...values, object: e.target.value })}
+              type="text"
+              placeholder="Objet de votre message"
+              className="rounded-lg sm:py-4 lg:py-0 pl-2 font-playwrite font-light sm:text-4xl lg:text-base placeholder:font-playwrite"
+            />
+          </div>
+          <div className="flex flex-col sm:col-span-2 lg:col-span-2">
+            <label
+              htmlFor=""
+              className="font-normal font-kalnia sm:text-4xl lg:text-lg sm:mb-4 lg:mb-2"
+            >
+              Message
+            </label>
+            <OutlinedInput
+              value={values.message}
+              onChange={(e) =>
+                setValues({ ...values, message: e.target.value })
+              }
+              type="text"
+              multiline
+              rows={5}
+              placeholder="Votre message"
+              className="rounded-lg sm:py-4 lg:py-0 pl-2 font-playwrite font-light sm:text-4xl lg:text-base placeholder:font-playwrite"
+            />
+          </div>
           <Button
             variant="contained"
-            className="font-rubik mt-2 bg-primary w-fit uppercase text-sm"
+            className="font-kalnia h-fit sm:mt-4 lg:mt-2 bg-primary w-fit normal-case sm:text-4xl lg:text-base"
             size="large"
             startIcon={<MdSend />}
           >

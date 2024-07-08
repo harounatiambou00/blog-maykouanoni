@@ -11,9 +11,10 @@ module.exports = {
         onSecondary: "#000000",
       },
       fontFamily: {
-        rubik: ["Rubik", "sans-serif"],
-        playfair: ["Playfair Display", "serif"],
-        kanit: ["Kanit", "sans-serif"],
+        kalnia: ["Kalnia", "serif"],
+        playwrite: ["Playwrite DE Grund", "cursive"],
+        megrim: ["Megrim", "system-ui"],
+        montserrat: ["Montserrat", "sans-serif"],
       },
     },
   },

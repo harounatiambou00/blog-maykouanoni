@@ -9,15 +9,5 @@ const theme = createTheme({
       main: "#F5E8C7",
     },
   },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          textTransform: "none",
-          letterSpacing: 3,
-        },
-      },
-    },
-  },
 });
 export default theme;

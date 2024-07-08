@@ -61,7 +61,7 @@ const MenuBar = ({ editor }: MenuBarProps) => {
       </div>
       <hr className="my-2 rotate-90 w-6 bg-black bg-opacity-90 text-black" />
       <Select
-        className="border-none outline-none font-rubik"
+        className="border-none outline-none font-playwrite"
         inputProps={{ sx: { border: 0 } }}
         value="h1"
         size="small"
@@ -72,7 +72,7 @@ const MenuBar = ({ editor }: MenuBarProps) => {
             e.preventDefault();
             editor.chain().focus().toggleHeading({ level: 1 }).run();
           }}
-          className="font-rubik font-bold text-xl"
+          className="font-playwrite font-bold text-xl"
           value="h1"
         >
           Titre 1
@@ -82,7 +82,7 @@ const MenuBar = ({ editor }: MenuBarProps) => {
             e.preventDefault();
             editor.chain().focus().toggleHeading({ level: 2 }).run();
           }}
-          className="font-rubik font-semibold text-lg"
+          className="font-playwrite font-semibold text-lg"
           value="h2"
         >
           Titre 2
@@ -92,7 +92,7 @@ const MenuBar = ({ editor }: MenuBarProps) => {
             e.preventDefault();
             editor.chain().focus().toggleHeading({ level: 3 }).run();
           }}
-          className="font-rubik font-medium text-md"
+          className="font-playwrite font-medium text-md"
           value="h3"
         >
           Titre 3
@@ -102,7 +102,7 @@ const MenuBar = ({ editor }: MenuBarProps) => {
             e.preventDefault();
             editor.chain().focus().toggleHeading({ level: 4 }).run();
           }}
-          className="font-rubik text-base"
+          className="font-playwrite text-base"
         >
           Normal
         </MenuItem>
@@ -111,7 +111,7 @@ const MenuBar = ({ editor }: MenuBarProps) => {
             e.preventDefault();
             editor.chain().focus().toggleHeading({ level: 5 }).run();
           }}
-          className="font-rubik ttext-sm font-light"
+          className="font-playwrite ttext-sm font-light"
         >
           Petit
         </MenuItem>

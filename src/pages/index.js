@@ -4,3 +4,6 @@ export { default as ContactMe } from "./contact-me/ContactMe";
 export { default as News } from "./news/News";
 export { default as FinanceAndBusiness } from "./finance-and-business/FinanceAndBusiness";
 export { default as NewsItemDetails } from "./news/NewsItemDetails";
+export { default as SignInPage } from "./sign-in/SignInPage";
+export { default as SignUpPage } from "./sign-up/SignUpPage";
+export { default as AccountPage } from "./account/Account";
