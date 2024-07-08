@@ -57,7 +57,7 @@ const FinanceAndBusiness = () => {
     }
   }, [searchCriteria]);
   return (
-    <PageLayout title="Finance & Business">
+    <PageLayout title="Finance & Affaires">
       <div className="w-full sm:mt-10 lg:mt-5 sm:mb-24 lg:mb-16">
         <div className="flex sm:items-end lg:items-center justify-between w-full">
           <OutlinedInput

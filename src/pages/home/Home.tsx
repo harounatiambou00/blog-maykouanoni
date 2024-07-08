@@ -47,12 +47,12 @@ const Home = () => {
                 variant="contained"
                 size="large"
                 startIcon={<PiNewspaper className="sm:text-6xl lg:text-xl" />}
-                className="font-playwrite font-medium normal-case bg-primary sm:text-4xl lg:text-base"
+                className="font-playwrite font-medium normal-case bg-primary sm:text-4xl lg:text-base rounded-full"
               >
                 L'actualite
               </Button>
               <Button
-                onClick={() => navigate("/about")}
+                onClick={() => navigate("/finance-and-business")}
                 variant="outlined"
                 className="font-playwrite font-medium normal-case rounded-full sm:text-4xl lg:text-base"
                 endIcon={
