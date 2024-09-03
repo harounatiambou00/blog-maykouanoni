@@ -2,7 +2,7 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import { Footer, Header } from "./components";
 import {
-  AboutMe,
+  About,
   ContactMe,
   Home,
   FinanceAndBusiness,
@@ -30,17 +30,17 @@ function App() {
   const dispatch = useAppDispatch();
   React.useEffect(() => {
     if (pathname === "/") {
-      document.title = "MAYKOUANONI - Acceuil";
+      document.title = "Le Décryptage - Acceuil";
     } else if (pathname === "/about-me") {
-      document.title = "MAYKOUANONI - Qui suis-je ?";
+      document.title = "Le Décryptage - À propos";
     } else if (pathname === "/news") {
-      document.title = "MAYKOUANONI - Actualités";
+      document.title = "Le Décryptage - Actualités";
     } else if (pathname === "/contact-me") {
-      document.title = "MAYKOUANONI - Contacts";
+      document.title = "Le Décryptage - Contacts";
     } else if (pathname === "/finance-and-business") {
-      document.title = "MAYKOUANONI - Finance & Affaires";
+      document.title = "Le Décryptage - Finance & Affaires";
     } else {
-      document.title = "MAYKOUANONI";
+      document.title = "Le Décryptage";
     }
   }, [pathname]);
   let currentUser = useAppSelector(
@@ -91,11 +91,13 @@ function App() {
 
   return (
     <div id="app" className="font-playwrite text-sm font-light">
-      <Header />
+      <Header>
+        <span></span>
+      </Header>
       <div className="sm:pt-48 lg:pt-24 sm:px-10 lg:px-10">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="about-me" element={<AboutMe />} />
+          <Route path="about" element={<About />} />
           <Route path="contact-me" element={<ContactMe />} />
           <Route path="account" element={<AccountPage />}>
             <Route path="" element={<PersonalInfoPage />} />

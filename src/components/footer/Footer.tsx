@@ -21,7 +21,7 @@ const Footer = () => {
               Le Decryptage
             </span>
           </div>
-          <div className="sm:text-4xl lg:text-base sm:mt-14 lg:mt-0 flex justify-center flex-wrap items-center text-sm font-light text-gray-500 sm:mb-0 dark:text-gray-400">
+          <div className="sm:text-4xl lg:text-base sm:mt-14 lg:mt-0 flex justify-center flex-wrap items-center text-sm font-light text-gray-500 sm:mb-0 dark:text-gray-400 z-50">
             <li className="sm:py-5 lg:py-0">
               <a href="#" className="hover:underline me-4 md:me-6 ">
                 À propos

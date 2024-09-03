@@ -56,11 +56,13 @@ const NewsItemDetailsCard = ({ item }: Props) => {
             {item.title}
           </h1>
           <p className="font-playwrite font-light sm:text-3xl lg:text-sm sm:mt-5 lg:mt-2 ">
-            {item.description}
+            {item.description.length <= 150
+              ? item.description
+              : item.description.slice(0, 150) + " ..."}
           </p>
           <p className="font-playwrite font-light sm:text-2xl lg:text-xs sm:mt-5 lg:mt-5 w-full flex items-center justify-between sm:px-4 lg:px-2">
             <div>Publié le {item.publicationDate.toString()}</div>
-            <div> {item.likedBy.length}likes</div>
+            <div> {item.likedBy.length} j'aime</div>
           </p>
           <div className="flex sm:mt-5 lg:mt-2">
             {item.tags.map((tag) => (

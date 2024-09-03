@@ -1,7 +1,8 @@
+import { BsThreeDots } from "react-icons/bs";
 import NewsSection from "./NewsSectionType";
+import { ReactNode } from "react";
 
 export type NewsCategoriesType = "ARTICLE" | "NEWS" | "FINANCE" | "OTHERS";
-export type NewsSubjectsType = "OTHERS" | "SPORT" | "POLITIC";
 
 export const newsCategories = [
   {
@@ -24,6 +25,13 @@ export const newsCategories = [
   key: NewsCategoriesType;
   label: string;
 }[];
+
+export type NewsSubjectsType =
+  | "OTHERS"
+  | "SPORT"
+  | "POLITIC"
+  | "SCIENCE"
+  | "ECONOMY";
 
 export const newsSubjects = [
   {

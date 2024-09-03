@@ -6,14 +6,14 @@ const links: LinkType[] = [
     title: "Acceuil",
     to: "/",
   },
-  /*{
+  {
     id: 2,
     title: "À propos",
     to: "/about",
-  },*/
+  },
   {
     id: 3,
-    title: "Actualité",
+    title: "L'Actualité",
     to: "/news",
   },
   {
