@@ -1,23 +1,32 @@
 import React from "react";
 import { PiNewspaper } from "react-icons/pi";
-import { Button, IconButton } from "@mui/material";
+import { Button } from "@mui/material";
 import { AiOutlineArrowRight } from "react-icons/ai";
-import { BsNewspaper } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../../hooks";
+import { RootState } from "../../../redux/store";
 const HeroSection = () => {
   const navigate = useNavigate();
+  let currentUser = useAppSelector(
+    (state: RootState) => state.currentUserSlice.user
+  );
   return (
     <section className="w-full sm:h-auto lg:h-screen flex sm:flex-col lg:flex-row sm:items-center lg:items-center sm:text-center lg:text-left sm:py-40 lg:py-4">
-      {/**<div className="hidden sm:mb-8 sm:flex sm:justify-center">
-    <div className="relative rounded-full px-3 py-1 text-sm leading-6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20">
-      Announcing our next round of funding.{" "}
-      <a href="#" className="font-semibold text-indigo-600">
-        <span aria-hidden="true" className="absolute inset-0" />
-        Read more <span aria-hidden="true">&rarr;</span>
-      </a>
-    </div>
-  </div> */}
       <div className="sm:w-full lg:w-1/2">
+        {!currentUser && (
+          <div className="hidden sm:mb-8 sm:flex sm:justify-center lg:justify-start">
+            <div className="relative rounded-full px-3 py-1 text-sm leading-6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20">
+              Inscrivez-vous pour profiter au maximum de notre plateforme.{" "}
+              <button
+                className="font-bold text-primary"
+                onClick={() => navigate("/sign-up")}
+              >
+                <span aria-hidden="true" className="absolute inset-0" />
+                S'inscrire <span aria-hidden="true">&rarr;</span>
+              </button>
+            </div>
+          </div>
+        )}
         <h1 className="sm:text-8xl lg:text-5xl font-kalnia font-semibold tracking-tight text-gray-900">
           Enquêter, informer et décomplexer les consciences
         </h1>
@@ -55,7 +64,6 @@ const HeroSection = () => {
           }
           alt="logo"
           className="h-3/4"
-          onClick={() => navigate("/")}
         />
       </div>
     </section>

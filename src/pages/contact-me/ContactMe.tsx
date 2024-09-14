@@ -1,9 +1,22 @@
 import React from "react";
 import { PageLayout } from "../../layouts";
-import { BsBuildings } from "react-icons/bs";
+import { BsBuildings, BsSend } from "react-icons/bs";
 import { MdOutlineLocalPhone, MdSend } from "react-icons/md";
 import { MdOutlineEmail } from "react-icons/md";
-import { Button, OutlinedInput, TextField } from "@mui/material";
+import {
+  Alert,
+  Button,
+  OutlinedInput,
+  Slide,
+  SlideProps,
+  Snackbar,
+  TextField,
+} from "@mui/material";
+import { firestore } from "../../config/firebase-config";
+import { addDoc, collection } from "firebase/firestore";
+function SlideTransition(props: SlideProps) {
+  return <Slide {...props} direction="down" />;
+}
 
 const ContactMe = () => {
   const [values, setValues] = React.useState({
@@ -14,6 +27,33 @@ const ContactMe = () => {
     object: "",
     message: "",
   });
+  const [openMessageSentSnackbar, setOpenMessageSentSnackbar] =
+    React.useState(false);
+  const handleSubmit = async () => {
+    try {
+      await addDoc(collection(firestore, "messages"), {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        email: values.email,
+        phoneNumber: values.phoneNumber,
+        object: values.object,
+        message: values.message,
+        timestamp: new Date(),
+      });
+      setOpenMessageSentSnackbar(true);
+      setValues({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phoneNumber: "",
+        object: "",
+        message: "",
+      });
+    } catch (error) {
+      console.error("Erreur lors de l'envoi du message : ", error);
+    }
+  };
+
   return (
     <PageLayout title="Contacts">
       <div className="w-full h-screen flex sm:flex-col lg:flex-row">
@@ -148,12 +188,19 @@ const ContactMe = () => {
           </div>
           <Button
             variant="contained"
-            className="font-kalnia h-fit sm:mt-4 lg:mt-2 bg-primary w-fit normal-case sm:text-4xl lg:text-base"
+            className="font-playwrite sm:mt-4 lg:mt-2 bg-primary w-fit normal-case sm:text-4xl lg:text-base"
             size="large"
-            startIcon={<MdSend />}
+            startIcon={<BsSend />}
+            onClick={handleSubmit}
           >
             Envoyer
           </Button>
+          <Snackbar
+            open={openMessageSentSnackbar}
+            TransitionComponent={SlideTransition}
+          >
+            <Alert>Votre message a ete envoye avec succes.</Alert>
+          </Snackbar>
         </div>
       </div>
     </PageLayout>

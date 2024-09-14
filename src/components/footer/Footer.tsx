@@ -13,15 +13,15 @@ const Footer = () => {
   );
 
   return (
-    <footer className="bg-white dark:bg-gray-900 m-4 border-t border-black">
+    <footer className="bg-whiteborder-t border-black w-full">
       <div className="w-full max-w-screen-xl mx-auto sm:px-10 lg:px-4 sm:py-28 lg:py-8">
         <div className="sm:flex sm:flex-col lg:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse cursor-pointer">
-            <span className="self-center  sm:text-7xl lg:text-3xl font-kalnia font-semibold whitespace-nowrap dark:text-white">
+            <span className="self-center  sm:text-7xl lg:text-3xl font-kalnia font-semibold whitespace-nowrap">
               Le Decryptage
             </span>
           </div>
-          <div className="sm:text-4xl lg:text-base sm:mt-14 lg:mt-0 flex justify-center flex-wrap items-center text-sm font-light text-gray-500 sm:mb-0 dark:text-gray-400 z-50">
+          <div className="sm:text-4xl lg:text-base sm:mt-14 lg:mt-0 flex justify-center flex-wrap items-center text-sm font-light text-gray-500 sm:mb-0 z-50">
             <li className="sm:py-5 lg:py-0">
               <a href="#" className="hover:underline me-4 md:me-6 ">
                 À propos
@@ -56,15 +56,15 @@ const Footer = () => {
             )}
           </div>
         </div>
-        <hr className="sm:my-20 lg:my-8 border-gray-200 sm:mx-auto dark:border-gray-700" />
-        <span className="block  text-gray-500 sm:text-center dark:text-gray-400 sm:text-3xl lg:text-sm">
+        <hr className="sm:my-20 lg:my-8 border-gray-200 sm:mx-auto" />
+        <span className="block  text-gray-500 sm:text-center  sm:text-3xl lg:text-sm">
           © 2024{" "}
           <a href="#" className="hover:underline">
             Le Decryptage™
           </a>
           . Tous droits réservés.
         </span>
-        <span className="mt-2 block text-gray-500 sm:text-center dark:text-gray-400 sm:text-3xl lg:text-sm">
+        <span className="mt-2 block text-gray-500 sm:text-center sm:text-3xl lg:text-sm">
           Développé par{" "}
           <a href="#" className="hover:underline">
             TiamTech
